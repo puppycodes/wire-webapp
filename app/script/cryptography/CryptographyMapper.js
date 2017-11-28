@@ -195,7 +195,7 @@ z.cryptography.CryptographyMapper = class CryptographyMapper {
   _map_confirmation(confirmation) {
     return {
       data: {
-        message_id: confirmation.message_id,
+        message_id: confirmation.first_message_id,
         status: (() => {
           switch (confirmation.type) {
             case z.proto.Confirmation.Type.DELIVERED:
@@ -354,17 +354,17 @@ z.cryptography.CryptographyMapper = class CryptographyMapper {
       data: {
         status: (() => {
           switch (status.type) {
-            case z.proto.ActivityStatus.Type.NONE:
+            case z.proto.ActivityStatus.ActivityType.NONE:
               return z.user.StatusType.NONE;
-            case z.proto.ActivityStatus.Type.OUT_OF_OFFICE:
+            case z.proto.ActivityStatus.ActivityType.OUT_OF_OFFICE:
               return z.user.StatusType.OUT_OF_OFFICE;
-            case z.proto.ActivityStatus.Type.REMOTE:
+            case z.proto.ActivityStatus.ActivityType.REMOTE:
               return z.user.StatusType.REMOTE;
-            case z.proto.ActivityStatus.Type.SICK:
+            case z.proto.ActivityStatus.ActivityType.SICK:
               return z.user.StatusType.SICK;
-            case z.proto.ActivityStatus.Type.VACATION:
+            case z.proto.ActivityStatus.ActivityType.VACATION:
               return z.user.StatusType.VACATION;
-            case z.proto.ActivityStatus.Type.UNAVAILABLE:
+            case z.proto.ActivityStatus.ActivityType.UNAVAILABLE:
               return z.user.StatusType.UNAVAILABLE;
             default:
               throw new z.cryptography.CryptographyError(

@@ -164,11 +164,11 @@ z.entity.User = class User {
       return this.devices().every(client_et => client_et.meta.is_verified());
     });
 
-    this.status = ko.observable();
+    this.status = ko.observable(z.user.StatusType.NONE);
   }
 
   subscribeToChanges() {
-    this.status.subscribe(() => _.debounce(() => amplify.publish(z.event.WebApp.USER.PERSIST, this), 100));
+    this.status.subscribe(() => amplify.publish(z.event.WebApp.USER.PERSIST, this));
   }
 
   add_client(new_client_et) {

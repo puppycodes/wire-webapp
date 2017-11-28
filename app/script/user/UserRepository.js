@@ -571,17 +571,17 @@ z.user.UserRepository = class UserRepository {
       const activityStatus = (() => {
         switch (status) {
           case z.user.StatusType.NONE:
-            return z.proto.ActivityStatus.Type.NONE;
+            return z.proto.ActivityStatus.ActivityType.NONE;
           case z.user.StatusType.OUT_OF_OFFICE:
-            return z.proto.ActivityStatus.Type.OUT_OF_OFFICE;
+            return z.proto.ActivityStatus.ActivityType.OUT_OF_OFFICE;
           case z.user.StatusType.REMOTE:
-            return z.proto.ActivityStatus.Type.REMOTE;
+            return z.proto.ActivityStatus.ActivityType.REMOTE;
           case z.user.StatusType.SICK:
-            return z.proto.ActivityStatus.Type.SICK;
+            return z.proto.ActivityStatus.ActivityType.SICK;
           case z.user.StatusType.VACATION:
-            return z.proto.ActivityStatus.Type.VACATION;
+            return z.proto.ActivityStatus.ActivityType.VACATION;
           case z.user.StatusType.UNAVAILABLE:
-            return z.proto.ActivityStatus.Type.UNAVAILABLE;
+            return z.proto.ActivityStatus.ActivityType.UNAVAILABLE;
           default:
         }
       })();
