@@ -89,6 +89,7 @@ z.user.UserRepository = class UserRepository {
     amplify.subscribe(z.event.WebApp.CLIENT.REMOVE, this.remove_client_from_user.bind(this));
     amplify.subscribe(z.event.WebApp.CLIENT.UPDATE, this.update_clients_from_user.bind(this));
     amplify.subscribe(z.event.WebApp.USER.EVENT_FROM_BACKEND, this.on_user_event.bind(this));
+    amplify.subscribe(z.event.WebApp.USER.PERSIST, this.saveUserInDb.bind(this));
   }
 
   /**
@@ -116,8 +117,35 @@ z.user.UserRepository = class UserRepository {
       case z.event.Backend.USER.UPDATE:
         this.user_update(event_json);
         break;
+      case z.even.Client.USER.STATUS:
+        this.onUserStatus(event_json);
+        break;
       default:
     }
+  }
+
+  loadUsers() {
+    if (this.is_team()) {
+      return this.user_service
+        .loadUserFromDb()
+        .then(users => {
+          if (users.length) {
+            return Promise.all(
+              users.map(user => this.get_user_by_id(user.id).then(userEt => userEt.status(user.status)))
+            );
+          }
+        })
+        .then(() => this.users().forEach(userEt => userEt.subscribeToChanges()));
+    }
+  }
+
+  /**
+   * Persists a conversation state in the database.
+   * @param {User} userEt - User which should be persisted
+   * @returns {Promise} Resolves when user was saved
+   */
+  saveUserInDb(userEt) {
+    return this.user_service.saveUserInDb(userEt);
   }
 
   /**
@@ -164,6 +192,18 @@ z.user.UserRepository = class UserRepository {
       window.setTimeout(() => {
         amplify.publish(z.event.WebApp.LIFECYCLE.SIGN_OUT, z.auth.SIGN_OUT_REASON.ACCOUNT_DELETED, true);
       }, 50);
+    }
+  }
+
+  /**
+   * Event to update status of user.
+   * @param {Object} event - Event data
+   * @returns {undefined} No return value
+   */
+  onUserStatus(event) {
+    if (this.is_team()) {
+      const {from: userId, data: {status}} = event;
+      this.get_user_by_id(userId).then(userEt => userEt.status(status));
     }
   }
 
@@ -522,6 +562,32 @@ z.user.UserRepository = class UserRepository {
       user_et.devices(client_ets);
       amplify.publish(z.event.WebApp.USER.CLIENTS_UPDATED, user_id, client_ets);
     });
+  }
+
+  changeStatus(status) {
+    if (status !== this.self().status()) {
+      this.self().status(status);
+
+      const activityStatus = (() => {
+        switch (status) {
+          case z.user.StatusType.NONE:
+            return z.proto.ActivityStatus.Type.NONE;
+          case z.user.StatusType.OUT_OF_OFFICE:
+            return z.proto.ActivityStatus.Type.OUT_OF_OFFICE;
+          case z.user.StatusType.REMOTE:
+            return z.proto.ActivityStatus.Type.REMOTE;
+          case z.user.StatusType.SICK:
+            return z.proto.ActivityStatus.Type.SICK;
+          case z.user.StatusType.VACATION:
+            return z.proto.ActivityStatus.Type.VACATION;
+          case z.user.StatusType.UNAVAILABLE:
+            return z.proto.ActivityStatus.Type.UNAVAILABLE;
+          default:
+        }
+      })();
+
+      amplify.publish(z.event.WebApp.CONVERSATION.CHANGE_STATUS, activityStatus);
+    }
   }
 
   /**

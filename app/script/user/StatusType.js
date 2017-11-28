@@ -20,23 +20,17 @@
 'use strict';
 
 window.z = window.z || {};
-window.z.cryptography = z.cryptography || {};
+window.z.user = z.user || {};
 
-z.cryptography.GENERIC_MESSAGE_TYPE = {
-  ASSET: 'asset',
-  CALLING: 'calling',
-  CLEARED: 'cleared',
-  CLIENT_ACTION: 'clientAction',
-  CONFIRMATION: 'confirmation',
-  DELETED: 'deleted',
-  EDITED: 'edited',
-  EPHEMERAL: 'ephemeral',
-  HIDDEN: 'hidden',
-  IMAGE: 'image',
-  KNOCK: 'knock',
-  LAST_READ: 'lastRead',
-  LOCATION: 'location',
-  REACTION: 'reaction',
-  STATUS: 'activityStatus',
-  TEXT: 'text',
+/**
+ * Enum for different user status types.
+ * @type {z.user.StatusType} Enum of status types
+ */
+z.user.StatusType = {
+  NONE: 1,
+  OUT_OF_OFFICE: 2,
+  REMOTE: 3,
+  SICK: 4,
+  UNAVAILABLE: 5,
+  VACATION: 6,
 };

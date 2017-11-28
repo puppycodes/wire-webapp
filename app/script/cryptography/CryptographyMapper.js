@@ -90,6 +90,8 @@ z.cryptography.CryptographyMapper = class CryptographyMapper {
         return this._map_location(generic_message.location, generic_message.message_id);
       case z.cryptography.GENERIC_MESSAGE_TYPE.REACTION:
         return this._map_reaction(generic_message.reaction);
+      case z.cryptography.GENERIC_MESSAGE_TYPE.STATUS:
+        return this._mapStatus(generic_message.activityStatus);
       case z.cryptography.GENERIC_MESSAGE_TYPE.TEXT:
         return this._map_text(generic_message.text, generic_message.message_id);
       default:
@@ -344,6 +346,35 @@ z.cryptography.CryptographyMapper = class CryptographyMapper {
         reaction: reaction.emoji,
       },
       type: z.event.Client.CONVERSATION.REACTION,
+    };
+  }
+
+  _mapStatus(status) {
+    return {
+      data: {
+        status: (() => {
+          switch (status.type) {
+            case z.proto.ActivityStatus.Type.NONE:
+              return z.user.StatusType.NONE;
+            case z.proto.ActivityStatus.Type.OUT_OF_OFFICE:
+              return z.user.StatusType.OUT_OF_OFFICE;
+            case z.proto.ActivityStatus.Type.REMOTE:
+              return z.user.StatusType.REMOTE;
+            case z.proto.ActivityStatus.Type.SICK:
+              return z.user.StatusType.SICK;
+            case z.proto.ActivityStatus.Type.VACATION:
+              return z.user.StatusType.VACATION;
+            case z.proto.ActivityStatus.Type.UNAVAILABLE:
+              return z.user.StatusType.UNAVAILABLE;
+            default:
+              throw new z.cryptography.CryptographyError(
+                z.cryptography.CryptographyError.TYPE.UNHANDLED_TYPE,
+                'Unhandled status type'
+              );
+          }
+        })(),
+        type: z.event.Client.USER.STATUS,
+      },
     };
   }
 

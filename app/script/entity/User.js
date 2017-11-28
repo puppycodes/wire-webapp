@@ -155,7 +155,7 @@ z.entity.User = class User {
 
     this.is_request = ko.pureComputed(() => this.connection().is_request());
 
-    // e2ee
+    // E2EE
     this.devices = ko.observableArray();
     this.is_verified = ko.pureComputed(() => {
       if (this.devices().length === 0 && !this.is_me) {
@@ -163,6 +163,12 @@ z.entity.User = class User {
       }
       return this.devices().every(client_et => client_et.meta.is_verified());
     });
+
+    this.status = ko.observable();
+  }
+
+  subscribeToChanges() {
+    this.status.subscribe(() => _.debounce(() => amplify.publish(z.event.WebApp.USER.PERSIST, this), 100));
   }
 
   add_client(new_client_et) {
@@ -196,5 +202,12 @@ z.entity.User = class User {
       return z.util.StringUtil.starts_with(this.username(), query);
     }
     return z.util.StringUtil.compare_transliteration(this.name(), query) || this.username() === query;
+  }
+
+  serialize() {
+    return {
+      id: this.id,
+      status: this.status(),
+    };
   }
 };

@@ -85,6 +85,7 @@ z.event.WebApp = {
     ASSET: {
       CANCEL: 'wire.webapp.conversation.asset.cancel',
     },
+    CHANGE_STATUS: 'wire.app.conversation.change_status',
     DEBUG: 'wire.webapp.conversation.debug',
     DETAIL_VIEW: {
       SHOW: 'wire.webapp.conversation.detail_view.show',
@@ -231,6 +232,7 @@ z.event.WebApp = {
     CLIENT_REMOVED: 'wire.webapp.user.client_removed',
     CLIENTS_UPDATED: 'wire.webapp.user.clients_udpated',
     EVENT_FROM_BACKEND: 'wire.webapp.user.event_from_backend',
+    PERSIST: 'wire.webapp.user.persist',
     UNBLOCKED: 'wire.webapp.user.unblocked',
   },
   WARNING: {
