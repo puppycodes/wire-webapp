@@ -3264,7 +3264,7 @@ z.conversation.ConversationRepository = class ConversationRepository {
    * @param {Object} client_mismatch - Client mismatch object containing client user maps for deleted, missing and obsolete clients
    * @param {z.proto.GenericMessage} [generic_message] - GenericMessage that was sent
    * @param {Object} [payload] - Initial payload resulting in a 412
-   * @returns {Promise} Resolve when mistmatch was handled
+   * @returns {Promise} Resolve when mismatch was handled
    */
   _handle_client_mismatch(conversation_id, client_mismatch, generic_message, payload) {
     return Promise.resolve()

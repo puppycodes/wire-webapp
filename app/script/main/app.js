@@ -154,6 +154,7 @@ z.main.App = class App {
     const services = {};
 
     services.asset = new z.assets.AssetService(this.auth.client);
+    services.broadcast = new z.broadcast.BroadcastService(this.auth.client);
     services.calling = new z.calling.CallingService(this.auth.client);
     services.connect = new z.connect.ConnectService(this.auth.client);
     services.connect_google = new z.connect.ConnectGoogleService(this.auth.client);
