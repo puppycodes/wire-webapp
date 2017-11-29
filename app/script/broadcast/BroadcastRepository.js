@@ -41,15 +41,11 @@ z.broadcast.BroadcastRepository = class BroadcastRepository {
     this.userRepository = userRepository;
     this.logger = new z.util.Logger('z.broadcast.BroadcastRepository', z.config.LOGGER.OPTIONS);
 
-    amplify.subscribe(z.event.WebApp.CONVERSATION.CHANGE_STATUS, this.sendStatus.bind(this));
+    amplify.subscribe(z.event.WebApp.BROADCAST.SEND_MESSAGE, this.sendMessage.bind(this));
   }
 
-  sendStatus(changedStatus) {
-    const genericMessage = new z.proto.GenericMessage(z.util.create_random_uuid());
-    const activityStatus = new z.proto.ActivityStatus(changedStatus);
-    genericMessage.set(z.cryptography.GENERIC_MESSAGE_TYPE.STATUS, activityStatus);
-
-    return this.broadcastGenericMessage(genericMessage).then(() => this._trackStatus(changedStatus));
+  sendMessage(genericMessage) {
+    return this.broadcastGenericMessage(genericMessage);
   }
 
   /**
@@ -306,21 +302,5 @@ z.broadcast.BroadcastRepository = class BroadcastRepository {
           return payload;
         });
       });
-  }
-
-  //##############################################################################
-  // Tracking helpers
-  //##############################################################################
-
-  /**
-   * Track status action.
-   *
-   * @param {z.user.StatusType} activityStatus - Type of status
-   * @returns {undefined} No return value
-   */
-  _trackStatus(activityStatus) {
-    amplify.publish(z.event.WebApp.ANALYTICS.EVENT, z.tracking.EventName.CONVERSATION.REACTED_TO_MESSAGE, {
-      action: activityStatus === z.user.StatusType.NONE ? 'set' : 'unset',
-    });
   }
 };

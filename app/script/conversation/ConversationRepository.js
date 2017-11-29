@@ -171,7 +171,6 @@ z.conversation.ConversationRepository = class ConversationRepository {
     amplify.subscribe(z.event.WebApp.EVENT.UPDATE_TIME_OFFSET, this.update_time_offset.bind(this));
     amplify.subscribe(z.event.WebApp.TEAM.MEMBER_LEAVE, this.team_member_leave.bind(this));
     amplify.subscribe(z.event.WebApp.USER.UNBLOCKED, this.unblocked_user.bind(this));
-    amplify.subscribe(z.event.WebApp.CONVERSATION.CHANGE_STATUS, this.sendStatus.bind(this));
   }
 
   /**
@@ -1781,14 +1780,6 @@ z.conversation.ConversationRepository = class ConversationRepository {
         this.logger.error(`Sending conversation reset failed: ${error.message}`, error);
         throw error;
       });
-  }
-
-  sendStatus(changedStatus) {
-    const genericMessage = new z.proto.GenericMessage(z.util.create_random_uuid());
-    const activityStatus = new z.proto.ActivityStatus(changedStatus);
-    genericMessage.set(z.cryptography.GENERIC_MESSAGE_TYPE.STATUS, activityStatus);
-
-    return this.send_generic_message_to_conversation(this.self_conversation().id, genericMessage);
   }
 
   /**

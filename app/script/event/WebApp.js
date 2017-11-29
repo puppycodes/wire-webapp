@@ -36,6 +36,9 @@ z.event.WebApp = {
     PLAY_IN_LOOP: 'wire.webapp.audio.play_in_loop',
     STOP: 'wire.webapp.audio.stop',
   },
+  BROADCAST: {
+    SEND_MESSAGE: 'wire.app.broadcast.send_message',
+  },
   CALL: {
     EVENT_FROM_BACKEND: 'wire.webapp.call.event_from_backend',
     MEDIA: {

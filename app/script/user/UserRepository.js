@@ -568,7 +568,7 @@ z.user.UserRepository = class UserRepository {
     if (status !== this.self().status()) {
       this.self().status(status);
 
-      const activityStatus = (() => {
+      const updatedStatus = (() => {
         switch (status) {
           case z.user.StatusType.NONE:
             return z.proto.ActivityStatus.Type.NONE;
@@ -586,8 +586,25 @@ z.user.UserRepository = class UserRepository {
         }
       })();
 
-      amplify.publish(z.event.WebApp.CONVERSATION.CHANGE_STATUS, activityStatus);
+      const genericMessage = new z.proto.GenericMessage(z.util.create_random_uuid());
+      const activityStatus = new z.proto.ActivityStatus(updatedStatus);
+      genericMessage.set(z.cryptography.GENERIC_MESSAGE_TYPE.STATUS, activityStatus);
+
+      amplify.publish(z.event.WebApp.BROADCAST.SEND_MESSAGE, genericMessage);
+      this._trackStatus(status);
     }
+  }
+
+  /**
+   * Track status action.
+   *
+   * @param {z.user.StatusType} activityStatus - Type of status
+   * @returns {undefined} No return value
+   */
+  _trackStatus(activityStatus) {
+    amplify.publish(z.event.WebApp.ANALYTICS.EVENT, z.tracking.EventName.CONVERSATION.REACTED_TO_MESSAGE, {
+      action: activityStatus === z.user.StatusType.NONE ? 'set' : 'unset',
+    });
   }
 
   /**
